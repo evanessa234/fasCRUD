@@ -6,7 +6,7 @@ const logger = require('morgan');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const userRouter = require("./api/users/router");
+const userRouter = require('./api/users/router');
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 var corsOptions = { 
-  origin: "http://localhost:8081"
+  origin: "http://localhost:3000"
 };
 
 app.use(cors(corsOptions));
@@ -32,7 +32,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use("/api/subInCharge", userRouter);
+app.use('/api/subInCharge', userRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

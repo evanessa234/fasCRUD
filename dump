@@ -22,3 +22,111 @@ async(req, res) => {
         await conn.destroy();
     }
 }
+
+INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, practHr, totPractHr) VALUES (2020, 2021, 8, "CSL802", "ML", 4, 2, 12) WHERE EXISTS(SELECT * FROM course WHERE courseID = 5)
+
+INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, practHr, totPractHr) VALUES (2020, 2021, 8, "CSL802", "ML", 4, 2, 12) ON DUPLICATE KEY UPDATE
+fromAcadYr = 2020, toAcadYr = 2021, sem = 8, subjectCode = "CSL802", courseName = "AOA", credits = 3, practHr = 2, totPractHr = 12
+
+**** INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, practHr, totPractHr) VALUES (2020, 2021, 7, "CS7802", "ML", 4, 2, 12) ON DUPLICATE KEY UPDATE
+fromAcadYr = 2020, toAcadYr = 2021, sem = 7, subjectCode = "CS7802", courseName = "AOAOA", credits = 3, practHr = 2, totPractHr = 12
+
+
+postAndUpdateCourseDetails:
+{
+    "classOrLab": "class" 
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode":"CSC303",
+    "courseName":"SPA",
+    "credits": 6,
+    "lectHr": 4,
+    "totLectHr": 52
+}
+
+getCourseDetails: 
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303"
+}
+
+postAndUpdateObjectives:
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+    "objNo": 1,
+    "objName": "to study..."
+}
+
+getObjectives:
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303"
+}
+
+postAndUpdateCO:
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",  
+    "CO_no": "CO1",
+    "CO_name": "Understand new models ...",
+    "weightagePercent": 15,
+    "durationHr": 8,
+    "noOfExp": (only if lab subject then this too. Put int value)    
+}
+
+getCO:
+
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+}
+
+postAndUpdatePO: 
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+    "PO_no": "PO1",
+    "PO_title" "this is PO1",
+    "PO_description": "PO description......"
+}
+
+getPO: 
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+}
+
+postAndUpdatePSO: 
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+    "PSO_no": "PSO1",
+    "PSO_description": "this is PSO1..."
+}
+
+getPSO: 
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+}
+

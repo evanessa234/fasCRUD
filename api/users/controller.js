@@ -187,7 +187,6 @@ module.exports = {
             await conn.destroy();
         }
     },
-
     postAndUpdateCO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
@@ -228,7 +227,6 @@ module.exports = {
             await conn.destroy();
         }
     },
-
     getCO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
@@ -372,7 +370,274 @@ module.exports = {
             await conn.destroy();
         }
     },
+    postAndUpdateDqaTeamFeedback: async(req, res) => {
+        const body =req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = \"${body.subjectCode}\")`;
 
+
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`INSERT INTO dqateam (courseID, BTlevel, grammar, commentCO, properDistriMap, commentMap, syllabusCoverage, COweightage, chp_expWeightage, commentWeightage, CO_coverageAssMethod, marksDistribution, QuestionQuality, commentAssMethod, typeOfExp, timeJustified, modernToolsUsed, OutOfSyllabus) VALUES (${baseCondition}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+            BTlevel = ?, grammar = ?, commentCO = ?, properDistriMap = ?, commentMap = ?, syllabusCoverage = ?, COweightage = ?, chp_expWeightage = ?,commentWeightage = ?,CO_coverageAssMethod = ?,marksDistribution = ?,QuestionQuality = ?,commentAssMethod = ?,typeOfExp = ?,timeJustified = ?,modernToolsUsed = ?,OutOfSyllabus = ?`,
+                [
+                    body.BTlevel,
+                    body.grammar,
+                    body.commentCO,
+                    body.properDistriMap,
+                    body.commentMap,
+                    body.syllabusCoverage,
+                    body.COweightage,
+                    body.chp_expWeightage,
+                    body.commentWeightage,
+                    body.CO_coverageAssMethod,
+                    body.marksDistribution,
+                    body.QuestionQuality,
+                    body.commentAssMethod,
+                    body.typeOfExp,
+                    body.timeJustified,
+                    body.modernToolsUsed,
+                    body.OutOfSyllabus,
+                    body.BTlevel,
+                    body.grammar,
+                    body.commentCO,
+                    body.properDistriMap,
+                    body.commentMap,
+                    body.syllabusCoverage,
+                    body.COweightage,
+                    body.chp_expWeightage,
+                    body.commentWeightage,
+                    body.CO_coverageAssMethod,
+                    body.marksDistribution,
+                    body.QuestionQuality,
+                    body.commentAssMethod,
+                    body.typeOfExp,
+                    body.timeJustified,
+                    body.modernToolsUsed,
+                    body.OutOfSyllabus
+                ],
+                );
+            await conn.query('COMMIT'); // this step is only when we make any changes in database
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+    
+            });
+        } finally{
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    getDqaTeamFeedback: async (req, res) => {
+        const body = req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        console.log(baseCondition);
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`SELECT * FROM dqateam WHERE courseID = ${baseCondition}`);
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally {
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    updateHodFeedback: async (req, res) => {
+        const body = req.body;
+
+
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`UPDATE course SET \`HODapproved\` = ?, \`HODcomment\` = ?, \`HODcommentTime\` = CURRENT_TIMESTAMP Where \`fromAcadYr\` = ${body.fromAcadYr} AND \`toAcadYr\` = ${body.toAcadYr} AND \`sem\` = ${body.sem} AND \`subjectCode\` = "${body.subjectCode}" `,
+                [   
+                    body.HODapproved,
+                    body.HODcomment,
+                ],
+                );
+            await conn.query('COMMIT'); // this step is only when we make any changes in database
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally {
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    getHodFeedback: async (req, res) => {
+        const body = req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        console.log(baseCondition);
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`SELECT HODapproved, HODcomment, HODcommentTime FROM course WHERE courseID = ${baseCondition}`);
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally {
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    postAndUpdateCO_PO_Mapping: async (req, res) => {
+        const body = req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`INSERT INTO co_po_mapping (courseID, CO_no, PO_no, rating) VALUES (${baseCondition}, ?, ?, ?) ON DUPLICATE KEY UPDATE
+                CO_no = ?, PO_no = ?, rating = ?`,
+                [
+                    body.CO_no,
+                    body.PO_no,
+                    body.rating,
+                    body.CO_no,
+                    body.PO_no,
+                    body.rating
+                ],
+                );
+            await conn.query('COMMIT'); // this step is only when we make any changes in database
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally {
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    getCO_PO_Mapping: async (req, res) => {
+        const body = req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        
+        console.log(baseCondition);
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`SELECT * FROM co_po_mapping WHERE courseID = ${baseCondition}`);
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally {
+            await conn.release();
+            await conn.destroy();
+        }
+    },  
+    postAndUpdateCO_PSO_Mapping: async(req, res) => {
+        const body =req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`INSERT INTO co_pso_mapping (courseID, CO_no, PSO_no, rating) VALUES (${baseCondition}, ?, ?, ?) ON DUPLICATE KEY UPDATE
+            CO_no = ?, PSO_no = ?, rating = ?`,
+            [
+                body.CO_no,
+                body.PSO_no,
+                body.rating,
+                body.CO_no,
+                body.PSO_no,
+                body.rating
+            ],);
+            await conn.query('COMMIT'); // this step is only when we make any changes in database
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally{
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    getCO_PSO_Mapping: async(req, res) => {
+        const body =req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`SELECT * FROM co_pso_mapping WHERE courseID = ${baseCondition}`);
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+
+            });
+        } finally{
+            await conn.release();
+            await conn.destroy();
+        }
+    }       
 }
 
 

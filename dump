@@ -130,3 +130,144 @@ getPSO:
     "subjectCode": "CSC303",
 }
 
+postAndUpdateDqaTeamFeedback:
+{
+    "fromAcadYr": "2020",
+    "toAcadYr": "2021",
+    "sem": "5",
+    "subjectCode": "CSC501",
+    "BTlevel": 0 ,
+    "grammar":1,
+    "commentCO":"not really satisfied please make changes",
+    "properDistriMap":1,
+    "commentMap":"map",
+    "syllabusCoverage":1,
+    "COweightage":1,
+    "chp_expWeightage":1,
+    "commentWeightage":"weightage",
+    "CO_coverageAssMethod":1,
+    "marksDistribution":1,
+    "QuestionQuality":"quality",
+    "commentAssMethod":"method",
+    "typeOfExp":"exp",
+    "timeJustified":1,
+    "modernToolsUsed":1,
+    "OutOfSyllabus":1
+}
+
+getDqaTeamFeedback:
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",
+}
+
+***** Output of getDqaTeamFeedback will be ---
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 3,
+            "BTlevel": {
+                "type": "Buffer",
+                "data": [
+                    0
+                ]
+            },
+            "grammar": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "commentCO": "not really satisfied please make changes",
+            "properDistriMap": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "commentMap": "map",
+            "syllabusCoverage": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "COweightage": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "chp_expWeightage": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "commentWeightage": "weightage",
+            "CO_coverageAssMethod": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "marksDistribution": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "QuestionQuality": "quality",
+            "commentAssMethod": "method",
+            "typeOfExp": "exp",
+            "timeJustified": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "modernToolsUsed": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "OutOfSyllabus": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            }
+        }
+    ]
+}
+
+updateHodFeedback: (use ".put" method for CRUD function in react)
+{
+    "fromAcadYr": "2020",
+    "toAcadYr": "2021",
+    "sem": "5",
+    "subjectCode": "CSC501",
+    "HODapproved": 1,
+    "HODcomment": "yes very nice"
+}
+
+getHODFeedback:
+{
+    "success": 1,
+    "data": [
+        {
+            "HODapproved": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "HODcomment": "yes very nice",
+            "HODcommentTime": "2020-08-01T18:30:52.000Z"
+        }
+    ]
+}

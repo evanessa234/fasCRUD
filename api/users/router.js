@@ -11,7 +11,15 @@ const {
   postAndUpdatePO,
   getPO,
   postAndUpdatePSO,
-  getPSO
+  getPSO,
+  postAndUpdateDqaTeamFeedback,
+  getDqaTeamFeedback,
+  updateHodFeedback,
+  getHodFeedback,
+  postAndUpdateCO_PO_Mapping,
+  getCO_PO_Mapping,
+  postAndUpdateCO_PSO_Mapping,
+  getCO_PSO_Mapping
 } = require("./controller");
 
 
@@ -21,15 +29,23 @@ router.post("/postAndUpdateObjectives", postAndUpdateObjectives);
 router.post("/postAndUpdateCO", postAndUpdateCO);
 router.post("/postAndUpdatePO", postAndUpdatePO);
 router.post("/postAndUpdatePSO", postAndUpdatePSO);
+router.post("/postAndUpdateDqaTeamFeedback", postAndUpdateDqaTeamFeedback);
+router.put("/updateHodFeedback", updateHodFeedback);
+router.post("/postAndUpdateCO_PO_Mapping", postAndUpdateCO_PO_Mapping);
+router.post("/postAndUpdateCO_PSO_Mapping", postAndUpdateCO_PSO_Mapping);
+// router.post("/postAndUpdatePSO", postAndUpdatePSO);
 
 
 router.get("/getCourseDetails", getCourseDetails);
 router.get("/getCourses", getCourses);
 router.get("/getObjectives", getObjectives);
 router.get("/getCO", getCO);
-router.get("/getPO", getPO);
+router.get("/getDqaTeamFeedback", getDqaTeamFeedback);
 router.get("/getPSO", getPSO);
+router.get("/getHodFeedback", getHodFeedback);
+router.get("/getCO_PO_Mapping", getCO_PO_Mapping);
+router.get("/getCO_PSO_Mapping", getCO_PSO_Mapping);
+// router.get("/getPSO", getPSO);
 
 
-// router.post("/hey", letustry);
 module.exports = router;

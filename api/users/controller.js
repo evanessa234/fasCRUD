@@ -637,6 +637,69 @@ module.exports = {
             await conn.release();
             await conn.destroy();
         }
+    },
+    postAndUpdateAssessmentMethod: async(req, res) => {
+        const body =req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`INSERT INTO assessmentmethod (courseID, accessMethod, Q_no, CO_meet, marks) VALUES (${baseCondition}, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+            accessMethod = ?, Q_no = ?, CO_meet = ?, marks = ?`,
+            [
+                body.accessMethod,
+                body.Q_no,                
+                body.CO_meet,
+                body.marks,
+                body.accessMethod,
+                body.Q_no,                
+                body.CO_meet,
+                body.marks
+            ],
+            );
+            await conn.query('COMMIT'); // this step is only when we make any changes in database
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+    
+            });
+        } finally{
+            await conn.release();
+            await conn.destroy();
+        }
+    },
+    getAssessmentMethod: async(req, res) => {
+        const body =req.body;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        try {
+            const conn = await db();
+            await conn.query('START TRANSACTION');
+            const result = await conn.query(`SELECT * FROM assessmentmethod WHERE courseID = ${baseCondition}`);
+            await conn.query('COMMIT'); // this step is only when we make any changes in database
+            res.type('json');
+            res.status(200).json({
+                success: 1,
+                data: result
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: err,
+                message: "Database connection error"
+    
+            });
+        } finally{
+            await conn.release();
+            await conn.destroy();
+        }
     }       
 }
 

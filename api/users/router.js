@@ -19,7 +19,9 @@ const {
   postAndUpdateCO_PO_Mapping,
   getCO_PO_Mapping,
   postAndUpdateCO_PSO_Mapping,
-  getCO_PSO_Mapping
+  getCO_PSO_Mapping,
+  postAndUpdateAssessmentMethod,
+  getAssessmentMethod
 } = require("./controller");
 
 
@@ -33,7 +35,7 @@ router.post("/postAndUpdateDqaTeamFeedback", postAndUpdateDqaTeamFeedback);
 router.put("/updateHodFeedback", updateHodFeedback);
 router.post("/postAndUpdateCO_PO_Mapping", postAndUpdateCO_PO_Mapping);
 router.post("/postAndUpdateCO_PSO_Mapping", postAndUpdateCO_PSO_Mapping);
-// router.post("/postAndUpdatePSO", postAndUpdatePSO);
+router.post("/postAndUpdateAssessmentMethod", postAndUpdateAssessmentMethod);
 
 
 router.get("/getCourseDetails", getCourseDetails);
@@ -45,7 +47,7 @@ router.get("/getPSO", getPSO);
 router.get("/getHodFeedback", getHodFeedback);
 router.get("/getCO_PO_Mapping", getCO_PO_Mapping);
 router.get("/getCO_PSO_Mapping", getCO_PSO_Mapping);
-// router.get("/getPSO", getPSO);
+router.get("/getAssessmentMethod", getAssessmentMethod);
 
 
 module.exports = router;

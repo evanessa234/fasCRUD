@@ -9,7 +9,7 @@ module.exports = {
         try {
             await conn.query('START TRANSACTION');
             console.log(body);
-            const result = await conn.query(`INSERT into course(fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, lectHr, totLectHr) VALUES(?,?,?,?,?,?,?,?)`,
+            const result = await conn.query(`INSERT into course(fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, lectHr, totLectHr, classOrLab) VALUES(?,?,?,?,?,?,?,?,?)`,
                 [
                     body.fromAcadYr,
                     body.toAcadYr,
@@ -19,6 +19,7 @@ module.exports = {
                     body.credits,
                     body.lectHr,
                     body.totLectHr,
+                    body.classOrLab
                 ],
             );
             console.log(result);
@@ -43,9 +44,9 @@ module.exports = {
     getCourseDetails: async (req, res) => {
         const body = req.body;
         const baseCondition = `\`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}"`
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`select * from course where ${baseCondition}`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
@@ -67,9 +68,10 @@ module.exports = {
         }
     },
     getCourses: async (req, res) => {
-        const body = req.body;
+        // const body = req.body;
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`select * from course where 1`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
@@ -92,12 +94,12 @@ module.exports = {
     },
     postAndUpdateCourseDetails: async (req, res) => {
         const body = req.body;
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
-            const result = await conn.query(`INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, lectHr, totLectHr) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
-        fromAcadYr = ?, toAcadYr = ?, sem = ?, subjectCode = ?, courseName = ?, credits = ?, practHr = ?, totPractHr = ?`,
-                [
+            const result = await conn.query(`INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, lectHr, totLectHr, classOrLab) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+        fromAcadYr = ?, toAcadYr = ?, sem = ?, subjectCode = ?, courseName = ?, credits = ?, practHr = ?, totPractHr = ?, classOrLab = ?`,                [
                     body.fromAcadYr,
                     body.toAcadYr,
                     body.sem,
@@ -106,6 +108,7 @@ module.exports = {
                     body.credits,
                     body.lectHr,
                     body.totLectHr,
+                    body.classOrLab,
                     body.fromAcadYr,
                     body.toAcadYr,
                     body.sem,
@@ -113,7 +116,8 @@ module.exports = {
                     body.courseName,
                     body.credits,
                     body.lectHr,
-                    body.totLectHr
+                    body.totLectHr,
+                    body.classOrLab
                 ]);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
             res.type('json');
@@ -135,12 +139,13 @@ module.exports = {
     },
     postAndUpdateObjectives: async (req, res) => {
         const body = req.body;
-        const baseCondition = `SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = \"${body.subjectCode}\"`;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = \"${body.subjectCode}\")`;
+
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
-            const result = await conn.query(`INSERT INTO courseobjective (courseID, objNo, objName) VALUES (\`${baseCondition}\`, ${body.objNo}, "${body.objName}") ON DUPLICATE KEY UPDATE
+            const result = await conn.query(`INSERT INTO courseobjective (courseID, objNo, objName) VALUES (${baseCondition}, ${body.objNo}, \"${body.objName}\") ON DUPLICATE KEY UPDATE
         objName = "${body.objName}"`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
             res.type('json');
@@ -161,12 +166,11 @@ module.exports = {
         }
     },
     getObjectives: async (req, res) => {
-
         const body = req.body;
-        const baseCondition = `SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = \"${body.subjectCode}\"`;
+        const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = \"${body.subjectCode}\")`;
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM courseobjective WHERE courseID = ${baseCondition}`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
@@ -190,9 +194,9 @@ module.exports = {
     postAndUpdateCO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO courseoutcome (courseID, CO_no, CO_name, weightagePercent, durationHr, noOfExp) VALUES (${baseCondition}, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                 CO_no = ?, CO_name = ?, weightagePercent = ?, durationHr = ?, noOfExp = ?`,
@@ -231,8 +235,9 @@ module.exports = {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
         console.log(baseCondition);
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM courseoutcome WHERE courseID = ${baseCondition}`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
@@ -256,8 +261,9 @@ module.exports = {
     postAndUpdatePO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO progoutcomes (courseID, PO_no, PO_title, PO_description) VALUES (${baseCondition}, ?, ?, ?) ON DUPLICATE KEY UPDATE
             PO_title = ?, PO_description = ?`,
@@ -290,8 +296,9 @@ module.exports = {
     getPO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
+        
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM progoutcomes WHERE courseID = ${baseCondition}`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
@@ -315,8 +322,9 @@ module.exports = {
     postAndUpdatePSO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
+        
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO progspecificoutcome (courseID, PSO_no, PSO_description) VALUES (${baseCondition}, ?, ?) ON DUPLICATE KEY UPDATE
             PSO_no = ?, PSO_description = ?`,
@@ -348,8 +356,9 @@ module.exports = {
     getPSO: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
+        
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM progspecificoutcome WHERE courseID = ${baseCondition}`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database
@@ -373,10 +382,9 @@ module.exports = {
     postAndUpdateDqaTeamFeedback: async(req, res) => {
         const body =req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = \"${body.subjectCode}\")`;
-
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO dqateam (courseID, BTlevel, grammar, commentCO, properDistriMap, commentMap, syllabusCoverage, COweightage, chp_expWeightage, commentWeightage, CO_coverageAssMethod, marksDistribution, QuestionQuality, commentAssMethod, typeOfExp, timeJustified, modernToolsUsed, OutOfSyllabus) VALUES (${baseCondition}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
             BTlevel = ?, grammar = ?, commentCO = ?, properDistriMap = ?, commentMap = ?, syllabusCoverage = ?, COweightage = ?, chp_expWeightage = ?,commentWeightage = ?,CO_coverageAssMethod = ?,marksDistribution = ?,QuestionQuality = ?,commentAssMethod = ?,typeOfExp = ?,timeJustified = ?,modernToolsUsed = ?,OutOfSyllabus = ?`,
@@ -439,8 +447,9 @@ module.exports = {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
         console.log(baseCondition);
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM dqateam WHERE courseID = ${baseCondition}`);
             res.type('json');
@@ -462,10 +471,9 @@ module.exports = {
     },
     updateHodFeedback: async (req, res) => {
         const body = req.body;
-
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`UPDATE course SET \`HODapproved\` = ?, \`HODcomment\` = ?, \`HODcommentTime\` = CURRENT_TIMESTAMP Where \`fromAcadYr\` = ${body.fromAcadYr} AND \`toAcadYr\` = ${body.toAcadYr} AND \`sem\` = ${body.sem} AND \`subjectCode\` = "${body.subjectCode}" `,
                 [   
@@ -495,8 +503,9 @@ module.exports = {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
         console.log(baseCondition);
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT HODapproved, HODcomment, HODcommentTime FROM course WHERE courseID = ${baseCondition}`);
             res.type('json');
@@ -519,9 +528,9 @@ module.exports = {
     postAndUpdateCO_PO_Mapping: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO co_po_mapping (courseID, CO_no, PO_no, rating) VALUES (${baseCondition}, ?, ?, ?) ON DUPLICATE KEY UPDATE
                 CO_no = ?, PO_no = ?, rating = ?`,
@@ -555,10 +564,10 @@ module.exports = {
     getCO_PO_Mapping: async (req, res) => {
         const body = req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
-        
         console.log(baseCondition);
+        const conn = await db();
+
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM co_po_mapping WHERE courseID = ${baseCondition}`);
             res.type('json');
@@ -581,9 +590,9 @@ module.exports = {
     postAndUpdateCO_PSO_Mapping: async(req, res) => {
         const body =req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO co_pso_mapping (courseID, CO_no, PSO_no, rating) VALUES (${baseCondition}, ?, ?, ?) ON DUPLICATE KEY UPDATE
             CO_no = ?, PSO_no = ?, rating = ?`,
@@ -616,9 +625,9 @@ module.exports = {
     getCO_PSO_Mapping: async(req, res) => {
         const body =req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM co_pso_mapping WHERE courseID = ${baseCondition}`);
             res.type('json');
@@ -641,9 +650,9 @@ module.exports = {
     postAndUpdateAssessmentMethod: async(req, res) => {
         const body =req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
 
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`INSERT INTO assessmentmethod (courseID, accessMethod, Q_no, CO_meet, marks) VALUES (${baseCondition}, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
             accessMethod = ?, Q_no = ?, CO_meet = ?, marks = ?`,
@@ -679,8 +688,9 @@ module.exports = {
     getAssessmentMethod: async(req, res) => {
         const body =req.body;
         const baseCondition = `(SELECT courseID from course WHERE \`fromAcadYr\` = ${body.fromAcadYr} and  \`toAcadYr\` = ${body.toAcadYr} and \`sem\` = ${body.sem} and \`subjectCode\` = "${body.subjectCode}")`;
+        const conn = await db();
+        
         try {
-            const conn = await db();
             await conn.query('START TRANSACTION');
             const result = await conn.query(`SELECT * FROM assessmentmethod WHERE courseID = ${baseCondition}`);
             await conn.query('COMMIT'); // this step is only when we make any changes in database

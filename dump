@@ -1,36 +1,8 @@
-async(req, res) => {
-    const body =req.body;
-    try {
-        const conn = await db();
-        await conn.query('START TRANSACTION');
-        const result = await conn.query(``);
-        await conn.query('COMMIT'); // this step is only when we make any changes in database
-        res.type('json');
-        res.status(200).json({
-            success: 1,
-            data: result
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: 0,
-            error: err,
-            message: "Database connection error"
-
-        });
-    } finally{
-        await conn.release();
-        await conn.destroy();
-    }
-}
-
-INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, practHr, totPractHr) VALUES (2020, 2021, 8, "CSL802", "ML", 4, 2, 12) WHERE EXISTS(SELECT * FROM course WHERE courseID = 5)
-
-INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, practHr, totPractHr) VALUES (2020, 2021, 8, "CSL802", "ML", 4, 2, 12) ON DUPLICATE KEY UPDATE
-fromAcadYr = 2020, toAcadYr = 2021, sem = 8, subjectCode = "CSL802", courseName = "AOA", credits = 3, practHr = 2, totPractHr = 12
-
-**** INSERT INTO course (fromAcadYr, toAcadYr, sem, subjectCode, courseName, credits, practHr, totPractHr) VALUES (2020, 2021, 7, "CS7802", "ML", 4, 2, 12) ON DUPLICATE KEY UPDATE
-fromAcadYr = 2020, toAcadYr = 2021, sem = 7, subjectCode = "CS7802", courseName = "AOAOA", credits = 3, practHr = 2, totPractHr = 12
-
+- make sure to to use postAndUpdateCourseDetails and not postCourseDetails
+- make sure you use appropriate crud (.put, .get, .fetch, .post, etc...)
+- below are all the functions and queries tested (outputs are pasted too as a proof and reference)
+- All the best! Thank you!
+**************************************************
 
 postAndUpdateCourseDetails:
 {
@@ -44,6 +16,21 @@ postAndUpdateCourseDetails:
     "lectHr": 4,
     "totLectHr": 52
 }
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 2,
+        "insertId": 14,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+**************************************************
 
 getCourseDetails: 
 {
@@ -52,6 +39,286 @@ getCourseDetails:
     "sem": 3,
     "subjectCode": "CSC303"
 }
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 14,
+            "fromAcadYr": 2032,
+            "toAcadYr": 2033,
+            "sem": 3,
+            "subjectCode": "CSC303",
+            "courseName": "SPA",
+            "credits": 6,
+            "lectHr": 4,
+            "totLectHr": 52,
+            "practHr": 4,
+            "totPractHr": 52,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": "class"
+        }
+    ]
+}
+*********************************************************
+getCourses: (no need of request body...just invoke function to get list of all course details present in db)
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 2,
+            "fromAcadYr": 2018,
+            "toAcadYr": 2019,
+            "sem": 6,
+            "subjectCode": "CSC603",
+            "courseName": "Data Warehouse and Mining",
+            "credits": 4,
+            "lectHr": 4,
+            "totLectHr": 52,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 3,
+            "fromAcadYr": 2020,
+            "toAcadYr": 2021,
+            "sem": 5,
+            "subjectCode": "CSC501",
+            "courseName": "Analysis of algorithmn",
+            "credits": 4,
+            "lectHr": 4,
+            "totLectHr": 52,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "HODcomment": "yes very nice",
+            "HODcommentTime": "2020-08-06T18:22:08.000Z",
+            "classOrLab": null
+        },
+        {
+            "courseID": 9,
+            "fromAcadYr": 2020,
+            "toAcadYr": 2021,
+            "sem": 7,
+            "subjectCode": "CS7802",
+            "courseName": "AOAOA",
+            "credits": 3,
+            "lectHr": null,
+            "totLectHr": null,
+            "practHr": 2,
+            "totPractHr": 12,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 4,
+            "fromAcadYr": 2020,
+            "toAcadYr": 2021,
+            "sem": 7,
+            "subjectCode": "CSC701",
+            "courseName": "multimedia",
+            "credits": 4,
+            "lectHr": 4,
+            "totLectHr": null,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 5,
+            "fromAcadYr": 2020,
+            "toAcadYr": 2021,
+            "sem": 8,
+            "subjectCode": "CSL802",
+            "courseName": "AOA",
+            "credits": 3,
+            "lectHr": null,
+            "totLectHr": null,
+            "practHr": 2,
+            "totPractHr": 12,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 12,
+            "fromAcadYr": 2022,
+            "toAcadYr": 2023,
+            "sem": 7,
+            "subjectCode": "CS7802",
+            "courseName": "AOAOA",
+            "credits": 3,
+            "lectHr": null,
+            "totLectHr": null,
+            "practHr": 2,
+            "totPractHr": 12,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 17,
+            "fromAcadYr": 2032,
+            "toAcadYr": 203,
+            "sem": 3,
+            "subjectCode": "CSC303",
+            "courseName": "SPA5",
+            "credits": 6,
+            "lectHr": 4,
+            "totLectHr": 52,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 14,
+            "fromAcadYr": 2032,
+            "toAcadYr": 2033,
+            "sem": 3,
+            "subjectCode": "CSC303",
+            "courseName": "SPA",
+            "credits": 6,
+            "lectHr": 4,
+            "totLectHr": 52,
+            "practHr": 4,
+            "totPractHr": 52,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": "class"
+        },
+        {
+            "courseID": 24,
+            "fromAcadYr": 2033,
+            "toAcadYr": 2034,
+            "sem": 3,
+            "subjectCode": "CSC303",
+            "courseName": "SPA2",
+            "credits": 6,
+            "lectHr": 4,
+            "totLectHr": 52,
+            "practHr": 4,
+            "totPractHr": 52,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": "class"
+        },
+        {
+            "courseID": 18,
+            "fromAcadYr": 2044,
+            "toAcadYr": 2045,
+            "sem": 4,
+            "subjectCode": "CSC401",
+            "courseName": "hai kuch toh",
+            "credits": 4,
+            "lectHr": 2,
+            "totLectHr": null,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 20,
+            "fromAcadYr": 2064,
+            "toAcadYr": 2065,
+            "sem": 9,
+            "subjectCode": "CSC401",
+            "courseName": "pahgvgf",
+            "credits": 3,
+            "lectHr": 2,
+            "totLectHr": null,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        },
+        {
+            "courseID": 19,
+            "fromAcadYr": 3044,
+            "toAcadYr": 3045,
+            "sem": 9,
+            "subjectCode": "CSC901",
+            "courseName": "BBQ",
+            "credits": 1,
+            "lectHr": 2,
+            "totLectHr": null,
+            "practHr": null,
+            "totPractHr": null,
+            "submitStatus": null,
+            "submitTime": null,
+            "DQAapproved": null,
+            "HODapproved": null,
+            "HODcomment": null,
+            "HODcommentTime": null,
+            "classOrLab": null
+        }
+    ]
+}
+**************************************************
 
 postAndUpdateObjectives:
 {
@@ -62,6 +329,22 @@ postAndUpdateObjectives:
     "objNo": 1,
     "objName": "to study..."
 }
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 1,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+
+**************************************************
 
 getObjectives:
 {
@@ -70,6 +353,19 @@ getObjectives:
     "sem": 3,
     "subjectCode": "CSC303"
 }
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 14,
+            "objNo": 1,
+            "objName": "to study..."
+        }
+    ]
+}
+
+**************************************************
 
 postAndUpdateCO:
 {
@@ -83,6 +379,32 @@ postAndUpdateCO:
     "durationHr": 8,
     "noOfExp": (only if lab subject then this too. Put int value)    
 }
+(below is an example query which I fired successfully)
+{
+    "fromAcadYr": 2032,
+    "toAcadYr": 2033,
+    "sem": 3,
+    "subjectCode": "CSC303",  
+    "CO_no": "CO1",
+    "CO_name": "Understand new models ...",
+    "weightagePercent": 15,
+    "durationHr": 8
+}
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 2,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+**************************************************
 
 getCO:
 
@@ -92,7 +414,21 @@ getCO:
     "sem": 3,
     "subjectCode": "CSC303",
 }
-
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 14,
+            "CO_no": "CO1",
+            "CO_name": "Understand new models ...",
+            "weightagePercent": 15,
+            "durationHr": 8,
+            "noOfExp": null
+        }
+    ]
+}
+**************************************************
 postAndUpdatePO: 
 {
     "fromAcadYr": 2032,
@@ -103,15 +439,44 @@ postAndUpdatePO:
     "PO_title" "this is PO1",
     "PO_description": "PO description......"
 }
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 2,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+
+**************************************************
 
 getPO: 
 {
     "fromAcadYr": 2032,
     "toAcadYr": 2033,
     "sem": 3,
-    "subjectCode": "CSC303",
+    "subjectCode": "CSC303"
+}
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 14,
+            "PO_no": "PO1",
+            "PO_title": "this is PO1",
+            "PO_description": "PO description......"
+        }
+    ]
 }
 
+**************************************************
 postAndUpdatePSO: 
 {
     "fromAcadYr": 2032,
@@ -121,14 +486,42 @@ postAndUpdatePSO:
     "PSO_no": "PSO1",
     "PSO_description": "this is PSO1..."
 }
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 2,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
 
+**************************************************
 getPSO: 
 {
     "fromAcadYr": 2032,
     "toAcadYr": 2033,
     "sem": 3,
-    "subjectCode": "CSC303",
+    "subjectCode": "CSC303"
 }
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 14,
+            "PSO_no": "PSO1",
+            "PSO_description": "this is PSO1..."
+        }
+    ]
+}
+
+**************************************************
 
 postAndUpdateDqaTeamFeedback:
 {
@@ -154,25 +547,41 @@ postAndUpdateDqaTeamFeedback:
     "modernToolsUsed":1,
     "OutOfSyllabus":1
 }
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 1,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+
+**************************************************
 
 getDqaTeamFeedback:
 {
-    "fromAcadYr": 2032,
-    "toAcadYr": 2033,
-    "sem": 3,
-    "subjectCode": "CSC303",
+    "fromAcadYr": 2018,
+    "toAcadYr": 2019,
+    "sem": 6,
+    "subjectCode": "CSC603"
 }
 
-***** Output of getDqaTeamFeedback will be ---
+Output:
 {
     "success": 1,
     "data": [
         {
-            "courseID": 3,
+            "courseID": 2,
             "BTlevel": {
                 "type": "Buffer",
                 "data": [
-                    0
+                    1
                 ]
             },
             "grammar": {
@@ -181,7 +590,7 @@ getDqaTeamFeedback:
                     1
                 ]
             },
-            "commentCO": "not really satisfied please make changes",
+            "commentCO": "abc",
             "properDistriMap": {
                 "type": "Buffer",
                 "data": [
@@ -245,6 +654,8 @@ getDqaTeamFeedback:
     ]
 }
 
+**************************************************
+
 updateHodFeedback: (use ".put" method for CRUD function in react)
 {
     "fromAcadYr": "2020",
@@ -254,8 +665,31 @@ updateHodFeedback: (use ".put" method for CRUD function in react)
     "HODapproved": 1,
     "HODcomment": "yes very nice"
 }
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 1,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "(Rows matched: 1  Changed: 1  Warnings: 0",
+        "protocol41": true,
+        "changedRows": 1
+    }
+}
 
+**************************************************
 getHODFeedback:
+{
+    "fromAcadYr": "2020",
+    "toAcadYr": "2021",
+    "sem": "5",
+    "subjectCode": "CSC501"
+}
+
+Output:
 {
     "success": 1,
     "data": [
@@ -266,8 +700,204 @@ getHODFeedback:
                     1
                 ]
             },
-            "HODcomment": "yes very nice",
-            "HODcommentTime": "2020-08-01T18:30:52.000Z"
+            "HODcomment": "yes very nice againnnnn",
+            "HODcommentTime": "2020-08-06T19:27:26.000Z"
         }
     ]
 }
+
+**************************************************
+
+postAndUpdateCO_PO_Mapping:
+{
+    "fromAcadYr": "2018",
+    "toAcadYr": "2019",
+    "sem": "6",
+    "subjectCode": "CSC603",
+    "CO_no": "CO2",
+    "PO_no": "PO3",
+    "rating": 1
+}
+
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 2,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+**************************************************
+getCO_PO_Mapping:
+{
+    "fromAcadYr": "2018",
+    "toAcadYr": "2019",
+    "sem": "6",
+    "subjectCode": "CSC603"
+}
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 2,
+            "CO_no": "CO1",
+            "PO_no": "PO1",
+            "rating": 3
+        },
+        {
+            "courseID": 2,
+            "CO_no": "CO2",
+            "PO_no": "PO2",
+            "rating": 1
+        },
+        {
+            "courseID": 2,
+            "CO_no": "CO2",
+            "PO_no": "PO3",
+            "rating": 1
+        }
+    ]
+}
+**************************************************
+postAndUpdateCO_PSO_Mapping:
+{
+    "fromAcadYr": "2018",
+    "toAcadYr": "2019",
+    "sem": "6",
+    "subjectCode": "CSC603",
+    "CO_no": "CO1",
+    "PSO_no": "PSO1",
+    "rating": 3
+}
+
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 1,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+**************************************************
+getCO_PSO_Mapping:
+{
+    "fromAcadYr": "2018",
+    "toAcadYr": "2019",
+    "sem": "6",
+    "subjectCode": "CSC603"
+}
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 2,
+            "CO_no": "CO1",
+            "PSO_no": "PSO1",
+            "rating": 3
+        }
+    ]
+}
+
+**************************************************
+
+postAndUpdateAssessmentMethod: 
+{
+"fromAcadYr": "2018",
+"toAcadYr": "2019",
+"sem": "6",
+"subjectCode": "CSC603",
+"accessMethod": "Term Test 1",
+"CO_meet": "CO1",
+"Q_no": 1,
+"marks": 11
+}
+
+Output:
+{
+    "success": 1,
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 2,
+        "insertId": 0,
+        "serverStatus": 3,
+        "warningCount": 0,
+        "message": "",
+        "protocol41": true,
+        "changedRows": 0
+    }
+}
+
+**************************************************
+
+getAssessmentMethod:
+{
+"fromAcadYr": "2018",
+"toAcadYr": "2019",
+"sem": "6",
+"subjectCode": "CSC603"
+}
+
+Output:
+{
+    "success": 1,
+    "data": [
+        {
+            "courseID": 2,
+            "accessMethod": "Term Test 1",
+            "Q_no": 1,
+            "CO_meet": "CO1",
+            "marks": 11
+        },
+        {
+            "courseID": 2,
+            "accessMethod": "Term Test 2",
+            "Q_no": 1,
+            "CO_meet": "CO4",
+            "marks": 10
+        },
+        {
+            "courseID": 2,
+            "accessMethod": "Term Test 2",
+            "Q_no": 2,
+            "CO_meet": "CO5",
+            "marks": 13
+        },
+        {
+            "courseID": 2,
+            "accessMethod": "Term Test 2",
+            "Q_no": 3,
+            "CO_meet": "CO6",
+            "marks": 7
+        },
+        {
+            "courseID": 2,
+            "accessMethod": "Term Test I",
+            "Q_no": 2,
+            "CO_meet": "CO2",
+            "marks": 12
+        },
+        {
+            "courseID": 2,
+            "accessMethod": "Term Test I",
+            "Q_no": 3,
+            "CO_meet": "CO3",
+            "marks": 10
+        }
+    ]
+}
+
+**************************************************

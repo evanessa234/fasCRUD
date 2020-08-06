@@ -43,6 +43,7 @@ router.get("/getCourses", getCourses);
 router.get("/getObjectives", getObjectives);
 router.get("/getCO", getCO);
 router.get("/getDqaTeamFeedback", getDqaTeamFeedback);
+router.get("/getPO", getPO);
 router.get("/getPSO", getPSO);
 router.get("/getHodFeedback", getHodFeedback);
 router.get("/getCO_PO_Mapping", getCO_PO_Mapping);
